@@ -1,3 +1,5 @@
+# Creates a Spark Standalone Mode with an IPython PySpark kernel.
+
 FROM debian:jessie
 MAINTAINER mmast
 
@@ -5,7 +7,7 @@ RUN apt-get update
 RUN apt-get install -y apt-utils curl
 
 # Java
-RUN apt-get install -y openjdk-7-jre
+RUN apt-get install -y openjdk-7-jre --fix-missing
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 
 # Spark
@@ -24,13 +26,13 @@ RUN mkdir -p /root/.local/share/jupyter/kernels/pyspark
 ADD kernel.json /root/.local/share/jupyter/kernels/pyspark/kernel.json
 
 ADD spark.sh /opt/spark.sh
-RUN chown root:root /opt/spark.sh
 RUN chmod 700 /opt/spark.sh
 
-EXPOSE 7070 8888
+EXPOSE 7077 8080 8081 8888
 
 RUN mkdir /opt/notebooks
 VOLUME ['/opt/notebooks']
 WORKDIR /opt/notebooks
 
-CMD ["/opt/spark.sh", "-notebook"]
+ENTRYPOINT ["/opt/spark.sh"]
+CMD ["-notebook"]
